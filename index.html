@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css" />
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: Poppins, sans-serif;
             margin: 0;
             padding: 0;
         }
@@ -16,13 +16,29 @@
             height: calc(100vh - 100px);
             width: 100%;
         }
-        h1 {
-            text-align: center;
-            margin: 0;
-            padding: 10px 0;
-            background-color: #333333;
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #0a0000;
             color: white;
+        }
+        h1 {
+            margin: 0;
             font-size: 24px;
+        }
+        .header-logo {
+            height: 50px; /* Juster logoens høyde */
+        }
+        .button-container a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #FFFFFF;
+            color: black;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
         }
         .filter-container {
             padding: 10px;
@@ -68,7 +84,13 @@
     </style>
 </head>
 <body>
-    <h1>Triflex Kart</h1>
+    <div class="header-container">
+        <img src="/skriftlex.png" alt="Triflex Logo" class="header-logo">
+        <img src="/triflex-logo.png" alt="Triflex Logo" class="header-logo">
+        <div class="button-container">
+            <a href="cars.html">Se bilpark</a>
+        </div>
+    </div>
     <div class="filter-container">
         <label for="company-filter">Filtrer etter selskap:</label>
         <select id="company-filter">
@@ -168,6 +190,8 @@
     </script>
 </body>
 </html>
+
+
 
 
 
