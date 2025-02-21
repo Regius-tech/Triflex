@@ -579,7 +579,7 @@
         "id": 240,
         "number": "EB11086",
         "name": "G&M TRANSPORT AS",
-        "type": "Varebil",
+        "type": "VAREBIL",
         "palleplasser": "2",
         "isParticipant": "TRUE"
     },
@@ -1035,9 +1035,9 @@
         "id": 465,
         "number": "AE64051",
         "name": "G&M TRANSPORT AS",
-        "type": "Unknown",
-        "palleplasser": "Unknown",
-        "isParticipant": "FALSE"
+        "type": "VAREBIL",
+        "palleplasser": "2",
+        "isParticipant": "TRUE"
     },
     {
         "id": 467,
