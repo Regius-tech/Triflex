@@ -77,7 +77,7 @@
             margin-bottom: 20px;
         }
         .logo {
-            height: 40px; /* Juster høyden etter behov */
+            height: 100px; /* Juster høyden etter behov */
         }
     </style>
 </head>
@@ -85,7 +85,7 @@
     <div class="container">
         <div class="header-row">
             <a href="index.html" class="back-button">Tilbake til kartet</a>
-            <img src="/triflex.png" alt="Triflex Logo" class="logo">
+            <img src="/triflex-logo.png" alt="Triflex Logo" class="logo">
         </div>
         <h1>Biloversikt</h1>
         <div class="search-container">
@@ -122,15 +122,20 @@
 
         async function loadVehicles() {
             const response = await fetch('/api/positions');
-            vehicleData = await response.json();
+            const rawData = await response.json();
             
+            // Fjern duplikater basert på en unik identifikator, f.eks. navn
+            vehicleData = Array.from(new Set(rawData.map(v => JSON.stringify(v))))
+                .map(str => JSON.parse(str))
+                .filter(vehicle => vehicle.isParticipant);
+
             const tableBody = document.getElementById('vehicleTableBody');
             const companyFilter = document.getElementById('company-filter');
             const typeFilter = document.getElementById('type-filter');
             
             // Hent unike selskap og typer fra data
-            const companies = [...new Set(vehicleData.filter(vehicle => vehicle.isParticipant).map(vehicle => vehicle.company))];
-            const types = [...new Set(vehicleData.filter(vehicle => vehicle.isParticipant).map(vehicle => vehicle.type))];
+            const companies = [...new Set(vehicleData.map(vehicle => vehicle.company))];
+            const types = [...new Set(vehicleData.map(vehicle => vehicle.type))];
 
             // Populer selskap-filter
             companies.forEach(company => {
@@ -155,14 +160,15 @@
             const tableBody = document.getElementById('vehicleTableBody');
             const companyFilter = document.getElementById('company-filter').value;
             const typeFilter = document.getElementById('type-filter').value;
+            const dateFilter = document.getElementById('date-filter').value;
             const searchInput = document.getElementById('searchInput').value.toLowerCase();
 
             tableBody.innerHTML = '';
 
             const filteredVehicles = vehicleData
-                .filter(vehicle => vehicle.isParticipant)
                 .filter(vehicle => companyFilter === 'all' || vehicle.company === companyFilter)
                 .filter(vehicle => typeFilter === 'all' || vehicle.type === typeFilter)
+                .filter(vehicle => !dateFilter || new Date(vehicle.time).toLocaleDateString('no-NO') === new Date(dateFilter).toLocaleDateString('no-NO'))
                 .filter(vehicle => vehicle.name.toLowerCase().includes(searchInput) || 
                                  vehicle.type.toLowerCase().includes(searchInput) || 
                                  vehicle.company.toLowerCase().includes(searchInput) || 
@@ -237,6 +243,7 @@
         document.getElementById('searchInput').addEventListener('input', updateTable);
         document.getElementById('company-filter').addEventListener('change', updateTable);
         document.getElementById('type-filter').addEventListener('change', updateTable);
+        document.getElementById('date-filter').addEventListener('change', updateTable);
 
         loadVehicles();
     </script>
