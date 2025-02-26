@@ -77,7 +77,7 @@
             margin-bottom: 20px;
         }
         .logo {
-            height: 100px; /* Juster høyden etter behov */
+            height: 50px; /* Juster høyden etter behov */
         }
     </style>
 </head>
@@ -85,7 +85,7 @@
     <div class="container">
         <div class="header-row">
             <a href="index.html" class="back-button">Tilbake til kartet</a>
-            <img src="/triflex-logo.png" alt="Triflex Logo" class="logo">
+            <img src="/triflex.png" alt="Triflex Logo" class="logo">
         </div>
         <h1>Biloversikt</h1>
         <div class="search-container">
@@ -124,15 +124,23 @@
             const response = await fetch('/api/positions');
             const rawData = await response.json();
             
-            // Fjern duplikater basert på en unik identifikator, f.eks. navn
-            vehicleData = Array.from(new Set(rawData.map(v => JSON.stringify(v))))
-                .map(str => JSON.parse(str))
-                .filter(vehicle => vehicle.isParticipant);
+            // Fjern duplikater basert på navn (eller en unik ID hvis tilgjengelig)
+            const uniqueVehicles = new Map();
+            rawData.forEach(vehicle => {
+                if (vehicle.isParticipant) {
+                    uniqueVehicles.set(vehicle.name, vehicle); // Bruker navn som nøkkel
+                }
+            });
+            vehicleData = Array.from(uniqueVehicles.values());
 
             const tableBody = document.getElementById('vehicleTableBody');
             const companyFilter = document.getElementById('company-filter');
             const typeFilter = document.getElementById('type-filter');
             
+            // Tøm eksisterende valg (unntatt "Alle")
+            companyFilter.innerHTML = '<option value="all">Alle</option>';
+            typeFilter.innerHTML = '<option value="all">Alle</option>';
+
             // Hent unike selskap og typer fra data
             const companies = [...new Set(vehicleData.map(vehicle => vehicle.company))];
             const types = [...new Set(vehicleData.map(vehicle => vehicle.type))];
@@ -163,26 +171,32 @@
             const dateFilter = document.getElementById('date-filter').value;
             const searchInput = document.getElementById('searchInput').value.toLowerCase();
 
+            // Tøm tabellen helt før ny oppbygging
             tableBody.innerHTML = '';
 
-            const filteredVehicles = vehicleData
-                .filter(vehicle => companyFilter === 'all' || vehicle.company === companyFilter)
-                .filter(vehicle => typeFilter === 'all' || vehicle.type === typeFilter)
-                .filter(vehicle => !dateFilter || new Date(vehicle.time).toLocaleDateString('no-NO') === new Date(dateFilter).toLocaleDateString('no-NO'))
-                .filter(vehicle => vehicle.name.toLowerCase().includes(searchInput) || 
-                                 vehicle.type.toLowerCase().includes(searchInput) || 
-                                 vehicle.company.toLowerCase().includes(searchInput) || 
-                                 vehicle.palleplasser.toString().includes(searchInput));
+            const filteredVehicles = vehicleData.filter(vehicle => {
+                const matchesCompany = companyFilter === 'all' || vehicle.company === companyFilter;
+                const matchesType = typeFilter === 'all' || vehicle.type === typeFilter;
+                const matchesDate = !dateFilter || new Date(vehicle.time).toLocaleDateString('no-NO') === new Date(dateFilter).toLocaleDateString('no-NO');
+                const matchesSearch = (
+                    vehicle.name.toLowerCase().includes(searchInput) || 
+                    vehicle.type.toLowerCase().includes(searchInput) || 
+                    vehicle.company.toLowerCase().includes(searchInput) || 
+                    vehicle.palleplasser.toString().toLowerCase().includes(searchInput)
+                );
+                return matchesCompany && matchesType && matchesDate && matchesSearch;
+            });
 
             filteredVehicles.forEach(vehicle => {
-                const row = `<tr>
+                const row = document.createElement('tr');
+                row.innerHTML = `
                     <td>${vehicle.name}</td>
                     <td>${vehicle.type}</td>
                     <td>${vehicle.palleplasser}</td>
                     <td>${vehicle.company}</td>
                     <td data-time="${vehicle.time}">${new Date(vehicle.time).toLocaleString('no-NO')}</td>
-                </tr>`;
-                tableBody.innerHTML += row;
+                `;
+                tableBody.appendChild(row);
             });
         }
 
@@ -222,13 +236,11 @@
                 const bText = bCell.innerText;
 
                 if (isNumeric) {
-                    // Håndter "Unknown" som en spesiell verdi
                     if (aText === "Unknown" && bText === "Unknown") return 0;
                     if (aText === "Unknown") return 1 * sortDirection; // "Unknown" til bunnen
                     if (bText === "Unknown") return -1 * sortDirection; // "Unknown" til bunnen
                     return (Number(aText) - Number(bText)) * sortDirection;
                 } else if (isDate) {
-                    // Sorter basert på data-time-attributtet
                     const aTime = new Date(aCell.getAttribute('data-time')).getTime();
                     const bTime = new Date(bCell.getAttribute('data-time')).getTime();
                     return (aTime - bTime) * sortDirection;
