@@ -45,6 +45,14 @@
             background-color: #072D60;
             color: white;
             cursor: pointer;
+            position: relative;
+        }
+        th:hover {
+            background-color: #09458c;
+        }
+        th::after {
+            content: '';
+            margin-left: 5px;
         }
         tr:nth-child(even) {
             background-color: #f9f9f9;
@@ -103,8 +111,20 @@
             const data = await response.json();
             
             const tableBody = document.getElementById('vehicleTableBody');
+            const companyFilter = document.getElementById('company-filter'); // Hent selskap-filter
+            
             tableBody.innerHTML = '';
 
+            // Hent unike selskap fra data og legg til i filteret
+            const companies = [...new Set(data.filter(vehicle => vehicle.isParticipant).map(vehicle => vehicle.company))];
+            companies.forEach(company => {
+                const option = document.createElement('option');
+                option.value = company;
+                option.textContent = company;
+                companyFilter.appendChild(option);
+            });
+
+            // Last inn tabellen som før
             data.filter(vehicle => vehicle.isParticipant).forEach(vehicle => {
                 const row = `<tr>
                     <td>${vehicle.name}</td>
@@ -117,12 +137,43 @@
             });
         }
 
+        let sortDirection = 1; // 1 for stigende, -1 for synkende
+        let lastSortedColumn = -1; // Holder styr på sist sorterte kolonne
+
         function sortTable(columnIndex) {
             const table = document.querySelector("table");
-            const rows = Array.from(table.rows).slice(1);
-            const sortedRows = rows.sort((a, b) => 
-                a.cells[columnIndex].innerText.localeCompare(b.cells[columnIndex].innerText)
-            );
+            const rows = Array.from(table.rows).slice(1); // Hopp over overskrift
+            const isNumeric = columnIndex === 2; // Palleplasser er kolonne 2
+            const headers = table.querySelectorAll("th");
+
+            // Bytt retning hvis samme kolonne klikkes igjen, ellers stigende
+            if (lastSortedColumn === columnIndex) {
+                sortDirection *= -1;
+            } else {
+                sortDirection = 1;
+            }
+            lastSortedColumn = columnIndex;
+
+            // Oppdater pil på alle overskrifter
+            headers.forEach((th, index) => {
+                if (index === columnIndex) {
+                    th.style.fontWeight = 'bold'; // Valgt kolonne i fet skrift
+                    th.innerHTML = th.innerText.replace(/ [↑↓]/g, '') + (sortDirection === 1 ? ' ↑' : ' ↓');
+                } else {
+                    th.style.fontWeight = 'normal'; // Tilbakestill andre
+                    th.innerHTML = th.innerText.replace(/ [↑↓]/g, '');
+                }
+            });
+
+            const sortedRows = rows.sort((a, b) => {
+                const aText = a.cells[columnIndex].innerText;
+                const bText = b.cells[columnIndex].innerText;
+                if (isNumeric) {
+                    return (Number(aText) - Number(bText)) * sortDirection;
+                }
+                return aText.localeCompare(bText) * sortDirection;
+            });
+
             sortedRows.forEach(row => table.appendChild(row));
         }
 
