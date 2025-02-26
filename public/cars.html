@@ -70,11 +70,23 @@
             font-weight: bold;
             margin-bottom: 20px;
         }
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            height: 40px; /* Juster høyden etter behov */
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <a href="index.html" class="back-button">Tilbake til kartet</a>
+        <div class="header-row">
+            <a href="index.html" class="back-button">Tilbake til kartet</a>
+            <img src="/triflex-logo.png" alt="Triflex Logo" class="logo">
+        </div>
         <h1>Biloversikt</h1>
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Søk på bil...">
@@ -106,17 +118,21 @@
         </table>
     </div>
     <script>
+        let vehicleData = []; // Lagrer rådata globalt for filtrering
+
         async function loadVehicles() {
             const response = await fetch('/api/positions');
-            const data = await response.json();
+            vehicleData = await response.json();
             
             const tableBody = document.getElementById('vehicleTableBody');
             const companyFilter = document.getElementById('company-filter');
+            const typeFilter = document.getElementById('type-filter');
             
-            tableBody.innerHTML = '';
+            // Hent unike selskap og typer fra data
+            const companies = [...new Set(vehicleData.filter(vehicle => vehicle.isParticipant).map(vehicle => vehicle.company))];
+            const types = [...new Set(vehicleData.filter(vehicle => vehicle.isParticipant).map(vehicle => vehicle.type))];
 
-            // Hent unike selskap fra data og legg til i filteret
-            const companies = [...new Set(data.filter(vehicle => vehicle.isParticipant).map(vehicle => vehicle.company))];
+            // Populer selskap-filter
             companies.forEach(company => {
                 const option = document.createElement('option');
                 option.value = company;
@@ -124,14 +140,41 @@
                 companyFilter.appendChild(option);
             });
 
-            // Last inn tabellen som før
-            data.filter(vehicle => vehicle.isParticipant).forEach(vehicle => {
+            // Populer type-filter
+            types.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                typeFilter.appendChild(option);
+            });
+
+            updateTable(); // Initial oppdatering av tabellen
+        }
+
+        function updateTable() {
+            const tableBody = document.getElementById('vehicleTableBody');
+            const companyFilter = document.getElementById('company-filter').value;
+            const typeFilter = document.getElementById('type-filter').value;
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+
+            tableBody.innerHTML = '';
+
+            const filteredVehicles = vehicleData
+                .filter(vehicle => vehicle.isParticipant)
+                .filter(vehicle => companyFilter === 'all' || vehicle.company === companyFilter)
+                .filter(vehicle => typeFilter === 'all' || vehicle.type === typeFilter)
+                .filter(vehicle => vehicle.name.toLowerCase().includes(searchInput) || 
+                                 vehicle.type.toLowerCase().includes(searchInput) || 
+                                 vehicle.company.toLowerCase().includes(searchInput) || 
+                                 vehicle.palleplasser.toString().includes(searchInput));
+
+            filteredVehicles.forEach(vehicle => {
                 const row = `<tr>
                     <td>${vehicle.name}</td>
                     <td>${vehicle.type}</td>
                     <td>${vehicle.palleplasser}</td>
                     <td>${vehicle.company}</td>
-                    <td>${new Date(vehicle.time).toLocaleString('no-NO')}</td>
+                    <td data-time="${vehicle.time}">${new Date(vehicle.time).toLocaleString('no-NO')}</td>
                 </tr>`;
                 tableBody.innerHTML += row;
             });
@@ -144,6 +187,7 @@
             const table = document.querySelector("table");
             const rows = Array.from(table.rows).slice(1); // Hopp over overskrift
             const isNumeric = columnIndex === 2; // Palleplasser er kolonne 2
+            const isDate = columnIndex === 4; // Dato & Tid er kolonne 4
             const headers = table.querySelectorAll("th");
 
             // Bytt retning hvis samme kolonne klikkes igjen, ellers stigende
@@ -166,8 +210,10 @@
             });
 
             const sortedRows = rows.sort((a, b) => {
-                const aText = a.cells[columnIndex].innerText;
-                const bText = b.cells[columnIndex].innerText;
+                const aCell = a.cells[columnIndex];
+                const bCell = b.cells[columnIndex];
+                const aText = aCell.innerText;
+                const bText = bCell.innerText;
 
                 if (isNumeric) {
                     // Håndter "Unknown" som en spesiell verdi
@@ -175,6 +221,11 @@
                     if (aText === "Unknown") return 1 * sortDirection; // "Unknown" til bunnen
                     if (bText === "Unknown") return -1 * sortDirection; // "Unknown" til bunnen
                     return (Number(aText) - Number(bText)) * sortDirection;
+                } else if (isDate) {
+                    // Sorter basert på data-time-attributtet
+                    const aTime = new Date(aCell.getAttribute('data-time')).getTime();
+                    const bTime = new Date(bCell.getAttribute('data-time')).getTime();
+                    return (aTime - bTime) * sortDirection;
                 }
                 return aText.localeCompare(bText) * sortDirection;
             });
@@ -182,16 +233,13 @@
             sortedRows.forEach(row => table.appendChild(row));
         }
 
-        document.getElementById('searchInput').addEventListener('input', function () {
-            const filter = this.value.toLowerCase();
-            document.querySelectorAll("#vehicleTableBody tr").forEach(row => {
-                row.style.display = row.innerText.toLowerCase().includes(filter) ? "" : "none";
-            });
-        });
+        // Lytt til endringer i søk og filter
+        document.getElementById('searchInput').addEventListener('input', updateTable);
+        document.getElementById('company-filter').addEventListener('change', updateTable);
+        document.getElementById('type-filter').addEventListener('change', updateTable);
 
         loadVehicles();
     </script>
 </body>
 </html>
-
 
