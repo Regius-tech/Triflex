@@ -77,7 +77,7 @@
             margin-bottom: 20px;
         }
         .logo {
-            height: 50px; /* Juster høyden etter behov */
+            height: 100px;
         }
     </style>
 </head>
@@ -118,17 +118,17 @@
         </table>
     </div>
     <script>
-        let vehicleData = []; // Lagrer rådata globalt for filtrering
+        let vehicleData = [];
 
         async function loadVehicles() {
             const response = await fetch('/api/positions');
             const rawData = await response.json();
             
-            // Fjern duplikater basert på navn (eller en unik ID hvis tilgjengelig)
+            // Fjern duplikater basert på id
             const uniqueVehicles = new Map();
             rawData.forEach(vehicle => {
                 if (vehicle.isParticipant) {
-                    uniqueVehicles.set(vehicle.name, vehicle); // Bruker navn som nøkkel
+                    uniqueVehicles.set(vehicle.id, vehicle); // Bruker id som nøkkel
                 }
             });
             vehicleData = Array.from(uniqueVehicles.values());
@@ -137,15 +137,12 @@
             const companyFilter = document.getElementById('company-filter');
             const typeFilter = document.getElementById('type-filter');
             
-            // Tøm eksisterende valg (unntatt "Alle")
             companyFilter.innerHTML = '<option value="all">Alle</option>';
             typeFilter.innerHTML = '<option value="all">Alle</option>';
 
-            // Hent unike selskap og typer fra data
             const companies = [...new Set(vehicleData.map(vehicle => vehicle.company))];
             const types = [...new Set(vehicleData.map(vehicle => vehicle.type))];
 
-            // Populer selskap-filter
             companies.forEach(company => {
                 const option = document.createElement('option');
                 option.value = company;
@@ -153,7 +150,6 @@
                 companyFilter.appendChild(option);
             });
 
-            // Populer type-filter
             types.forEach(type => {
                 const option = document.createElement('option');
                 option.value = type;
@@ -161,7 +157,7 @@
                 typeFilter.appendChild(option);
             });
 
-            updateTable(); // Initial oppdatering av tabellen
+            updateTable();
         }
 
         function updateTable() {
@@ -171,13 +167,13 @@
             const dateFilter = document.getElementById('date-filter').value;
             const searchInput = document.getElementById('searchInput').value.toLowerCase();
 
-            // Tøm tabellen helt før ny oppbygging
             tableBody.innerHTML = '';
 
             const filteredVehicles = vehicleData.filter(vehicle => {
                 const matchesCompany = companyFilter === 'all' || vehicle.company === companyFilter;
                 const matchesType = typeFilter === 'all' || vehicle.type === typeFilter;
-                const matchesDate = !dateFilter || new Date(vehicle.time).toLocaleDateString('no-NO') === new Date(dateFilter).toLocaleDateString('no-NO');
+                const vehicleDate = new Date(vehicle.time).toISOString().split('T')[0]; // Kun dato-delen
+                const matchesDate = !dateFilter || vehicleDate === dateFilter;
                 const matchesSearch = (
                     vehicle.name.toLowerCase().includes(searchInput) || 
                     vehicle.type.toLowerCase().includes(searchInput) || 
@@ -200,17 +196,16 @@
             });
         }
 
-        let sortDirection = 1; // 1 for stigende, -1 for synkende
-        let lastSortedColumn = -1; // Holder styr på sist sorterte kolonne
+        let sortDirection = 1;
+        let lastSortedColumn = -1;
 
         function sortTable(columnIndex) {
             const table = document.querySelector("table");
-            const rows = Array.from(table.rows).slice(1); // Hopp over overskrift
-            const isNumeric = columnIndex === 2; // Palleplasser er kolonne 2
-            const isDate = columnIndex === 4; // Dato & Tid er kolonne 4
+            const rows = Array.from(table.rows).slice(1);
+            const isNumeric = columnIndex === 2;
+            const isDate = columnIndex === 4;
             const headers = table.querySelectorAll("th");
 
-            // Bytt retning hvis samme kolonne klikkes igjen, ellers stigende
             if (lastSortedColumn === columnIndex) {
                 sortDirection *= -1;
             } else {
@@ -218,13 +213,12 @@
             }
             lastSortedColumn = columnIndex;
 
-            // Oppdater pil på alle overskrifter
             headers.forEach((th, index) => {
                 if (index === columnIndex) {
-                    th.style.fontWeight = 'bold'; // Valgt kolonne i fet skrift
+                    th.style.fontWeight = 'bold';
                     th.innerHTML = th.innerText.replace(/ [↑↓]/g, '') + (sortDirection === 1 ? ' ↑' : ' ↓');
                 } else {
-                    th.style.fontWeight = 'normal'; // Tilbakestill andre
+                    th.style.fontWeight = 'normal';
                     th.innerHTML = th.innerText.replace(/ [↑↓]/g, '');
                 }
             });
@@ -237,8 +231,8 @@
 
                 if (isNumeric) {
                     if (aText === "Unknown" && bText === "Unknown") return 0;
-                    if (aText === "Unknown") return 1 * sortDirection; // "Unknown" til bunnen
-                    if (bText === "Unknown") return -1 * sortDirection; // "Unknown" til bunnen
+                    if (aText === "Unknown") return 1 * sortDirection;
+                    if (bText === "Unknown") return -1 * sortDirection;
                     return (Number(aText) - Number(bText)) * sortDirection;
                 } else if (isDate) {
                     const aTime = new Date(aCell.getAttribute('data-time')).getTime();
@@ -251,7 +245,6 @@
             sortedRows.forEach(row => table.appendChild(row));
         }
 
-        // Lytt til endringer i søk og filter
         document.getElementById('searchInput').addEventListener('input', updateTable);
         document.getElementById('company-filter').addEventListener('change', updateTable);
         document.getElementById('type-filter').addEventListener('change', updateTable);
