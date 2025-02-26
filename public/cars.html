@@ -111,7 +111,7 @@
             const data = await response.json();
             
             const tableBody = document.getElementById('vehicleTableBody');
-            const companyFilter = document.getElementById('company-filter'); // Hent selskap-filter
+            const companyFilter = document.getElementById('company-filter');
             
             tableBody.innerHTML = '';
 
@@ -168,7 +168,12 @@
             const sortedRows = rows.sort((a, b) => {
                 const aText = a.cells[columnIndex].innerText;
                 const bText = b.cells[columnIndex].innerText;
+
                 if (isNumeric) {
+                    // Håndter "Unknown" som en spesiell verdi
+                    if (aText === "Unknown" && bText === "Unknown") return 0;
+                    if (aText === "Unknown") return 1 * sortDirection; // "Unknown" til bunnen
+                    if (bText === "Unknown") return -1 * sortDirection; // "Unknown" til bunnen
                     return (Number(aText) - Number(bText)) * sortDirection;
                 }
                 return aText.localeCompare(bText) * sortDirection;
