@@ -582,5 +582,13 @@
         "type": "Vare/Skap m/LL. inntil 1 tonn",
         "palleplasser": 6,
         "isParticipant": "TRUE"
+    },
+    {
+        "id": 136,
+        "number": 270001,
+        "name": "Wiggo Engebretsen",
+        "type": "Vare/Skap m/LL. inntil 1 tonn",
+        "palleplasser": 8,
+        "isParticipant": "TRUE"
     }
 ]

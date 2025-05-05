@@ -3,9 +3,9 @@
         "id": 1,
         "number": 404001,
         "name": "KHL Transport & Service Larsen",
-        "type": "Test",
-        "palleplasser": 1,
-        "isParticipant": "FALSE"
+        "type": "Varebil med løftelem",
+        "palleplasser": 8,
+        "isParticipant": "TRUE"
     },
     {
         "id": 2,
@@ -19,9 +19,9 @@
         "id": 3,
         "number": 275801,
         "name": "Kåre S. Cammermeyer",
-        "type": "Test",
-        "palleplasser": 1,
-        "isParticipant": "FALSE"
+        "type": "Sprinter",
+        "palleplasser": "Unknown",
+        "isParticipant": "TRUE"
     },
     {
         "id": 4,
@@ -36,8 +36,8 @@
         "number": 100201,
         "name": "Bozza Kran & Transport",
         "type": "Test",
-        "palleplasser": 1,
-        "isParticipant": "FALSE"
+        "palleplasser": 5,
+        "isParticipant": "TRUE"
     },
     {
         "id": 6,
@@ -59,17 +59,17 @@
         "id": 8,
         "number": 100301,
         "name": "Daniel Betten",
-        "type": "Test",
-        "palleplasser": 1,
-        "isParticipant": "FALSE"
+        "type": "Varebil med løftelem",
+        "palleplasser": 8,
+        "isParticipant": "TRUE"
     },
     {
         "id": 14,
         "number": 100601,
         "name": "J. G Transport & Entreprenør AS",
-        "type": "Test",
-        "palleplasser": 1,
-        "isParticipant": "FALSE"
+        "type": "Varebil med løftelem",
+        "palleplasser": 8,
+        "isParticipant": "TRUE"
     },
     {
         "id": 15,
@@ -83,17 +83,17 @@
         "id": 16,
         "number": 100801,
         "name": "Kalind Kran- og Transport AS",
-        "type": "Test",
-        "palleplasser": 1,
-        "isParticipant": "FALSE"
+        "type": "Varebil",
+        "palleplasser": 5,
+        "isParticipant": "TRUE"
     },
     {
         "id": 17,
         "number": 406101,
         "name": "Mathias Morten Transport",
-        "type": "Test",
-        "palleplasser": 1,
-        "isParticipant": "FALSE"
+        "type": "Varebil med løftelem",
+        "palleplasser": 8,
+        "isParticipant": "TRUE"
     },
     {
         "id": 18,
@@ -115,9 +115,9 @@
         "id": 20,
         "number": 101101,
         "name": "J. G Transport & Entreprenør AS",
-        "type": "Test",
-        "palleplasser": 1,
-        "isParticipant": "FALSE"
+        "type": "Lastebil",
+        "palleplasser": 18,
+        "isParticipant": "TRUE"
     },
     {
         "id": 21,
@@ -139,8 +139,8 @@
         "id": 23,
         "number": 296301,
         "name": "Paul-Erik Gransbråten Transport",
-        "type": "Test",
-        "palleplasser": 1,
-        "isParticipant": "FALSE"
+        "type": "Varebil",
+        "palleplasser": "Unknown",
+        "isParticipant": "TRUE"
     }
 ]
