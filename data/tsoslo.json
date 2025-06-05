@@ -590,5 +590,13 @@
         "type": "Vare/Skap m/LL. inntil 1 tonn",
         "palleplasser": 8,
         "isParticipant": "TRUE"
+    },
+    {
+        "id": 118,
+        "number": 160604,
+        "name": "Rune Grøvslien",
+        "type": "Skapvogn 3-akslet",
+        "palleplasser": 19,
+        "isParticipant": "TRUE"
     }
 ]
