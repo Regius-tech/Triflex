@@ -139,8 +139,32 @@
         "id": 23,
         "number": 296301,
         "name": "Paul-Erik Gransbråten Transport",
-        "type": "Varebil",
+        "type": "EL ID Buzz Cargo",
         "palleplasser": "Unknown",
+        "isParticipant": "TRUE"
+    },
+    {
+        "id": 24,
+        "number": 101201,
+        "name": "Bozza Kran & Transport",
+        "type": "EL Lastebil",
+        "palleplasser": "10",
+        "isParticipant": "TRUE"
+    },
+    {
+        "id": 25,
+        "number": 406301,
+        "name": "Proflex Entreprenør & Transport AS",
+        "type": "Lastebil",
+        "palleplasser": "Unknown",
+        "isParticipant": "TRUE"
+    },
+    {
+        "id": 26,
+        "number": 296302,
+        "name": "Paul-Erik Gransbråten Transport",
+        "type": "Varebil",
+        "palleplasser": "4",
         "isParticipant": "TRUE"
     }
 ]
