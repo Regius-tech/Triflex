@@ -600,6 +600,14 @@
         "isParticipant": "TRUE"
     },
     {
+        "id": 137,
+        "number": 402201,
+        "name": "Ulf Pedersen",
+        "type": "Skapvogn 3-akslet",
+        "palleplasser": 19,
+        "isParticipant": "TRUE"
+    },
+    {
         "id": 117,
         "number": 296302,
         "name": "Paul-Erik Gransbråten",
