@@ -614,5 +614,13 @@
         "type": "Varebil inntil 10m3",
         "palleplasser": 4,
         "isParticipant": "TRUE"
+    },
+    {
+        "id": 138,
+        "number": 405301,
+        "name": "Edwin Hoff Kran og Transport",
+        "type": "4 Akslet Kranbil 80-110 tm",
+        "palleplasser": 9,
+        "isParticipant": "TRUE"
     }
 ]
