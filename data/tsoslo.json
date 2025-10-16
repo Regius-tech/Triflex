@@ -622,5 +622,53 @@
         "type": "4 Akslet Kranbil 80-110 tm",
         "palleplasser": 9,
         "isParticipant": "TRUE"
+    },
+    {
+        "id": 139,
+        "number": 223801,
+        "name": "Flishogger`n AS",
+        "type": "4 akslet Kranbil / Krokbil, 16-20tm",
+        "palleplasser": 14,
+        "isParticipant": "TRUE"
+    },
+    {
+        "id": 140,
+        "number": 223802,
+        "name": "Flishogger`n AS",
+        "type": "Kranbil 2 Akslet 12,1-16 tm",
+        "palleplasser": 14,
+        "isParticipant": "TRUE"
+    },
+    {
+        "id": 141,
+        "number": 223803,
+        "name": "Flishogger`n AS",
+        "type": "Kranbil 3 Akslet 12,1-16 tm",
+        "palleplasser": 15,
+        "isParticipant": "TRUE"
+    },
+    {
+        "id": 142,
+        "number": 223804,
+        "name": "Flishogger`n AS",
+        "type": "Krokbil 4 Akslet 952",
+        "palleplasser": Unknown,
+        "isParticipant": "TRUE"
+    },
+    {
+        "id": 119,
+        "number": 160603,
+        "name": "Henrik Grøvslien",
+        "type": "Krokbil 4 Akslet 952",
+        "palleplasser": Unknown,
+        "isParticipant": "TRUE"
+    },
+    {
+        "id": 116,
+        "number": 179901,
+        "name": "Jan Arild Enger",
+        "type": "Krokbil 4 Akslet 952",
+        "palleplasser": Unknown,
+        "isParticipant": "TRUE"
     }
 ]
