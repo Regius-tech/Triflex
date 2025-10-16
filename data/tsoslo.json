@@ -652,7 +652,7 @@
         "number": 223804,
         "name": "Flishogger`n AS",
         "type": "Krokbil 4 Akslet 952",
-        "palleplasser": Unknown,
+        "palleplasser": "Unknown",
         "isParticipant": "TRUE"
     },
     {
@@ -660,7 +660,7 @@
         "number": 160603,
         "name": "Henrik Grøvslien",
         "type": "Unknown",
-        "palleplasser": Unknown,
+        "palleplasser": "Unknown",
         "isParticipant": "TRUE"
     },
     {
@@ -668,7 +668,7 @@
         "number": 179901,
         "name": "Jan Arild Enger",
         "type": "Unknown",
-        "palleplasser": Unknown,
+        "palleplasser": "Unknown",
         "isParticipant": "TRUE"
     }
 ]
